@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PDR Traffic Reports Design System
+Premium, professional design for traffic analytics reporting
+Color palette: White, Black, Corporate Red (#D21B1B)
+*/
+
+@layer base {
+  :root {
+    /* Base Colors */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+
+    /* Card System */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --card-border: 0 0% 90%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+
+    /* Corporate Red - Primary Brand Color */
+    --brand-red: 345 85% 41%;
+    --brand-red-light: 345 85% 51%;
+    --brand-red-dark: 345 85% 31%;
+    --brand-red-muted: 345 25% 91%;
+
+    /* Primary System */
+    --primary: 345 85% 41%;
+    --primary-foreground: 0 0% 98%;
+
+    /* Secondary - Elegant Grays */
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+
+    /* Muted System */
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+
+    /* Accent System */
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+
+    /* Status Colors */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+
+    /* Form Elements */
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 345 85% 41%;
+
+    /* Layout */
+    --radius: 0.75rem;
+
+    /* Premium Gradients */
+    --gradient-brand: linear-gradient(135deg, hsl(345 85% 41%), hsl(345 85% 51%));
+    --gradient-subtle: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
+    --gradient-dark: linear-gradient(135deg, hsl(0 0% 3.9%), hsl(0 0% 9%));
+
+    /* Shadows */
+    --shadow-premium: 0 10px 30px -10px hsl(345 85% 41% / 0.1);
+    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.1);
+    --shadow-subtle: 0 1px 3px 0 hsl(0 0% 0% / 0.1);
+
+    /* Animations */
+    --animation-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --animation-bounce: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* KPI Colors */
+    --kpi-positive: 142 76% 36%;
+    --kpi-negative: 0 84.2% 60.2%;
+    --kpi-neutral: 215 28% 47%;
+    --kpi-highlight: 345 85% 41%;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Base Colors */
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    /* Card System */
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --card-border: 0 0% 14.9%;
+
+    /* Popover */
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Corporate Red - Same in dark mode */
+    --brand-red: 345 85% 51%;
+    --brand-red-light: 345 85% 61%;
+    --brand-red-dark: 345 85% 41%;
+    --brand-red-muted: 345 25% 11%;
+
+    /* Primary System */
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+
+    /* Secondary - Dark Grays */
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    /* Muted System */
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    /* Accent System */
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    /* Status Colors */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 70% 45%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 9%;
+
+    /* Form Elements */
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 345 85% 51%;
+
+    /* KPI Colors - Adjusted for dark mode */
+    --kpi-positive: 142 70% 45%;
+    --kpi-negative: 0 62.8% 30.6%;
+    --kpi-neutral: 215 28% 67%;
+    --kpi-highlight: 345 85% 51%;
+
+    /* Premium Gradients - Dark mode versions */
+    --gradient-brand: linear-gradient(135deg, hsl(345 85% 41%), hsl(345 85% 51%));
+    --gradient-subtle: linear-gradient(135deg, hsl(0 0% 3.9%), hsl(0 0% 6%));
+    --gradient-dark: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 3.9%));
+
+    /* Shadows - Darker for dark mode */
+    --shadow-premium: 0 10px 30px -10px hsl(0 0% 0% / 0.3);
+    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.3);
+    --shadow-subtle: 0 1px 3px 0 hsl(0 0% 0% / 0.2);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
