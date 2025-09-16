@@ -98,7 +98,8 @@ export function calculateKPIs(data: TrafficData[]): KPIData {
   const totalImpressions = data.reduce((sum, row) => sum + (row.impressions || 0), 0);
   const totalReach = data.reduce((sum, row) => sum + (row.reach || 0), 0);
   const totalClicks = data.reduce((sum, row) => sum + (row.clicks || 0), 0);
-  const totalCost = data.reduce((sum, row) => sum + (row.cost || 0), 0);
+  // Garantir que o custo seja calculado com precisão adequada
+  const totalCost = data.reduce((sum, row) => sum + (parseFloat(String(row.cost || 0))), 0);
   const totalConversions = data.reduce((sum, row) => sum + (row.conversions || 0), 0);
   const totalLeads = data.reduce((sum, row) => sum + (row.leads || 0), 0);
   const totalRevenue = data.reduce((sum, row) => sum + (row.revenue || 0), 0);

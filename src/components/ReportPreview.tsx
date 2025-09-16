@@ -8,6 +8,7 @@ import { exportDashboard, ExportOptions } from "@/lib/export";
 import Methodology from "@/components/Methodology";
 import { useState } from "react";
 import { toast } from "sonner";
+import { formatCurrency, formatNumber, formatPercentage } from '@/lib/utils';
 
 interface ReportPreviewProps {
   data: TrafficData[];
@@ -21,15 +22,6 @@ export const ReportPreview = ({ data, kpis }: ReportPreviewProps) => {
     start: new Date(data[0].date).toLocaleDateString('pt-BR'),
     end: new Date(data[data.length - 1].date).toLocaleDateString('pt-BR')
   } : null;
-
-  const formatCurrency = (value: number) => 
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-
-  const formatNumber = (value: number) => 
-    new Intl.NumberFormat('pt-BR').format(Math.round(value));
-
-  const formatPercentage = (value: number) => 
-    `${value.toFixed(2)}%`;
 
   const getInsights = () => {
     const insights = [];
@@ -193,23 +185,44 @@ export const ReportPreview = ({ data, kpis }: ReportPreviewProps) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="text-3xl font-bold text-[#D21B1B]">
+            <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-3xl font-bold text-gray-900">
+                {kpis.totalReach > 0 ? formatNumber(kpis.totalReach) : 'N/A'}
+              </div>
+              <div className="text-sm text-gray-600">Alcance</div>
+            </div>
+            <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-3xl font-bold text-gray-900">
                 {formatNumber(kpis.totalImpressions)}
               </div>
-              <div className="text-sm text-gray-600">Total de Impressões</div>
+              <div className="text-sm text-gray-600">Impressões</div>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="text-3xl font-bold text-[#D21B1B]">
-                {formatPercentage(kpis.ctr)}
+            <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-3xl font-bold text-gray-900">
+                {formatNumber(kpis.totalClicks)}
               </div>
-              <div className="text-sm text-gray-600">Taxa de Cliques (CTR)</div>
+              <div className="text-sm text-gray-600">Cliques no Link</div>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="text-3xl font-bold text-[#D21B1B]">
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-3xl font-bold text-gray-900">
                 {formatCurrency(kpis.totalCost)}
               </div>
-              <div className="text-sm text-gray-600">Investimento Total</div>
+              <div className="text-sm text-gray-600">Total Investido</div>
+            </div>
+            <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-3xl font-bold text-gray-900">
+                {kpis.totalLeads > 0 ? formatNumber(kpis.totalLeads) : 'N/A'}
+              </div>
+              <div className="text-sm text-gray-600">LEADS</div>
+            </div>
+            <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="text-3xl font-bold text-gray-900">
+                {kpis.cpl > 0 ? formatCurrency(kpis.cpl) : 'N/A'}
+              </div>
+              <div className="text-sm text-gray-600">Custo por LEAD</div>
             </div>
           </div>
           
@@ -217,21 +230,37 @@ export const ReportPreview = ({ data, kpis }: ReportPreviewProps) => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold mb-2">Destaques de Performance:</h4>
+              <h4 className="font-semibold mb-2">Métricas Principais:</h4>
               <ul className="space-y-1 text-sm">
-                <li>• CPL: {formatCurrency(kpis.cpl)}</li>
-                <li>• CPC: {formatCurrency(kpis.cpc)}</li>
-                <li>• CPM: {formatCurrency(kpis.cpm)}</li>
-                <li>• Conversões: {formatNumber(kpis.totalLeads > 0 ? kpis.totalLeads : kpis.totalConversions)}</li>
+                <li>• Alcance: {kpis.totalReach > 0 ? formatNumber(kpis.totalReach) : 'N/A'}</li>
+                <li>• Impressões: {formatNumber(kpis.totalImpressions)}</li>
+                <li>• Cliques no Link: {formatNumber(kpis.totalClicks)}</li>
+                <li>• Total Investido: {formatCurrency(kpis.totalCost)}</li>
+                <li>• LEADS: {kpis.totalLeads > 0 ? formatNumber(kpis.totalLeads) : 'N/A'}</li>
+                <li>• Custo por LEAD: {kpis.totalLeads > 0 ? formatCurrency(kpis.cpl) : 'N/A'}</li>
               </ul>
             </div>
+            <div>
+              <h4 className="font-semibold mb-2">Performance de Conversão:</h4>
+              <ul className="space-y-1 text-sm">
+                <li>• Leads Gerados: {kpis.totalLeads > 0 ? formatNumber(kpis.totalLeads) : 'N/A'}</li>
+                <li>• Conversas: {kpis.totalConversions > 0 ? formatNumber(kpis.totalConversions) : 'N/A'}</li>
+                <li>• Taxa de Conversão: {formatPercentage(kpis.conversionRate)}</li>
+                <li>• ROAS: {kpis.roas > 0 ? formatNumber(kpis.roas, 2) : 'N/A'}</li>
+              </ul>
+            </div>
+          </div>
+          
+          <Separator />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold mb-2">Análise de Tendência:</h4>
               <ul className="space-y-1 text-sm">
                 <li>• Impressões: 
                   <span className={`ml-1 ${
-                    kpis.trend.impressions === 'up' ? 'text-success' : 
-                    kpis.trend.impressions === 'down' ? 'text-destructive' : 'text-muted-foreground'
+                    kpis.trend.impressions === 'up' ? 'text-green-600' : 
+                    kpis.trend.impressions === 'down' ? 'text-red-600' : 'text-gray-600'
                   }`}>
                     {kpis.trend.impressions === 'up' ? '↗️ Crescendo' : 
                      kpis.trend.impressions === 'down' ? '↘️ Declinando' : '→ Estável'}
@@ -239,20 +268,34 @@ export const ReportPreview = ({ data, kpis }: ReportPreviewProps) => {
                 </li>
                 <li>• CTR: 
                   <span className={`ml-1 ${
-                    kpis.trend.ctr === 'up' ? 'text-success' : 
-                    kpis.trend.ctr === 'down' ? 'text-destructive' : 'text-muted-foreground'
+                    kpis.trend.ctr === 'up' ? 'text-green-600' : 
+                    kpis.trend.ctr === 'down' ? 'text-red-600' : 'text-gray-600'
                   }`}>
                     {kpis.trend.ctr === 'up' ? '↗️ Melhorando' : 
                      kpis.trend.ctr === 'down' ? '↘️ Piorando' : '→ Estável'}
                   </span>
                 </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">Eficiência de Custo:</h4>
+              <ul className="space-y-1 text-sm">
                 <li>• Custo: 
                   <span className={`ml-1 ${
-                    kpis.trend.cost === 'up' ? 'text-warning' : 
-                    kpis.trend.cost === 'down' ? 'text-success' : 'text-muted-foreground'
+                    kpis.trend.cost === 'up' ? 'text-orange-600' : 
+                    kpis.trend.cost === 'down' ? 'text-green-600' : 'text-gray-600'
                   }`}>
                     {kpis.trend.cost === 'up' ? '↗️ Aumentando' : 
                      kpis.trend.cost === 'down' ? '↘️ Diminuindo' : '→ Estável'}
+                  </span>
+                </li>
+                <li>• Conversões: 
+                  <span className={`ml-1 ${
+                    kpis.trend.conversions === 'up' ? 'text-green-600' : 
+                    kpis.trend.conversions === 'down' ? 'text-red-600' : 'text-gray-600'
+                  }`}>
+                    {kpis.trend.conversions === 'up' ? '↗️ Melhorando' : 
+                     kpis.trend.conversions === 'down' ? '↘️ Piorando' : '→ Estável'}
                   </span>
                 </li>
               </ul>
@@ -269,14 +312,14 @@ export const ReportPreview = ({ data, kpis }: ReportPreviewProps) => {
         <CardContent>
           <div className="space-y-4">
             {getInsights().map((insight, index) => (
-              <div key={index} className="p-3 bg-muted rounded-lg">
+              <div key={index} className="p-3 bg-gray-50 rounded-lg">
                 <p className="text-sm">{insight}</p>
               </div>
             ))}
             
-            <div className="mt-6 p-4 bg-gradient-subtle rounded-lg border-l-4 border-l-brand-red">
-              <h4 className="font-semibold text-brand-red mb-2">Próximos Passos Sugeridos:</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg border-l-4 border-l-red-600">
+              <h4 className="font-semibold text-red-600 mb-2">Próximos Passos Sugeridos:</h4>
+              <ul className="space-y-1 text-sm text-gray-600">
                 <li>• Analisar criativos com melhor CTR para replicar estratégia</li>
                 <li>• Testar novas segmentações baseadas nos dados de alcance</li>
                 <li>• Otimizar horários de veiculação com base nos picos de performance</li>

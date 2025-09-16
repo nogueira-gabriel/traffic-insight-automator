@@ -97,8 +97,7 @@ const exportToPdfAdvanced = async (
       if (clonedElement instanceof HTMLElement) {
         clonedElement.style.fontFamily = 'system-ui, -apple-system, sans-serif';
         // Note: fontSmoothing properties are vendor-specific and may not be available in all browsers
-        (clonedElement.style as any).fontSmoothing = 'antialiased';
-        (clonedElement.style as any).webkitFontSmoothing = 'antialiased';
+        // Removed assignment to 'webkitFontSmoothing' as it is read-only and non-standard
       }
     },
   });
@@ -185,14 +184,14 @@ const addCoverPage = (pdf: jsPDF, kpiData: KPIData, tableData: TrafficData[]) =>
   pdf.setFont('helvetica', 'bold');
   pdf.text('RESUMO EXECUTIVO', 20, 110);
 
-  // KPIs principais na capa
+  // KPIs principais na capa - métricas solicitadas
   const mainKPIs = [
-    { label: 'Total de Impressões', value: kpiData.totalImpressions.toLocaleString('pt-BR') },
-    { label: 'Total de Cliques', value: kpiData.totalClicks.toLocaleString('pt-BR') },
-    { label: 'Taxa de Clique (CTR)', value: `${kpiData.ctr.toFixed(2)}%` },
-    { label: 'Custo Total', value: `R$ ${kpiData.totalCost.toFixed(2)}` },
-    { label: 'Custo por Clique (CPC)', value: `R$ ${kpiData.cpc.toFixed(2)}` },
-    { label: 'ROAS', value: kpiData.roas.toFixed(2) },
+    { label: 'Alcance', value: kpiData.totalReach > 0 ? kpiData.totalReach.toLocaleString('pt-BR') : 'N/A' },
+    { label: 'Impressões', value: kpiData.totalImpressions.toLocaleString('pt-BR') },
+    { label: 'Cliques no Link', value: kpiData.totalClicks.toLocaleString('pt-BR') },
+    { label: 'Total Investido', value: `R$ ${kpiData.totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` },
+    { label: 'LEADS', value: kpiData.totalLeads > 0 ? kpiData.totalLeads.toLocaleString('pt-BR') : 'N/A' },
+    { label: 'Custo por LEAD', value: kpiData.totalLeads > 0 ? `R$ ${kpiData.cpl.toFixed(2)}` : 'N/A' },
   ];
 
   pdf.setFontSize(12);
@@ -242,20 +241,23 @@ const addInsightsPage = (pdf: jsPDF, kpiData: KPIData, tableData: TrafficData[])
     yPos += lines.length * 6 + 8;
   });
 
-  // Benchmarks
+  // Métricas principais
   yPos += 10;
   pdf.setFontSize(14);
   pdf.setFont('helvetica', 'bold');
-  pdf.text('Benchmarks da Indústria:', 20, yPos);
+  pdf.text('Métricas Principais:', 20, yPos);
 
   yPos += 15;
   pdf.setFontSize(11);
   pdf.setFont('helvetica', 'normal');
 
   const benchmarkTexts = [
-    `CTR: ${getStatusText(kpiData.benchmarks.ctrStatus)} (${kpiData.ctr.toFixed(2)}%)`,
-    `CPC: ${getStatusText(kpiData.benchmarks.cpcStatus)} (R$ ${kpiData.cpc.toFixed(2)})`,
-    `ROAS: ${getStatusText(kpiData.benchmarks.roasStatus)} (${kpiData.roas.toFixed(2)})`,
+    `Alcance: ${kpiData.totalReach > 0 ? kpiData.totalReach.toLocaleString('pt-BR') : 'N/A'}`,
+    `Impressões: ${kpiData.totalImpressions.toLocaleString('pt-BR')}`,
+    `Cliques no Link: ${kpiData.totalClicks.toLocaleString('pt-BR')}`,
+    `Total Investido: R$ ${kpiData.totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+    `LEADS: ${kpiData.totalLeads > 0 ? kpiData.totalLeads.toLocaleString('pt-BR') : 'N/A'}`,
+    `Custo por LEAD: ${kpiData.totalLeads > 0 ? `R$ ${kpiData.cpl.toFixed(2)}` : 'N/A'}`,
   ];
 
   benchmarkTexts.forEach((text) => {
@@ -322,12 +324,12 @@ const exportToPptxAdvanced = (kpiData: KPIData, tableData: TrafficData[], filena
   });
 
   const mainKPIs = [
+    { title: 'Alcance', value: kpiData.totalReach > 0 ? kpiData.totalReach.toLocaleString('pt-BR') : 'N/A' },
     { title: 'Impressões', value: kpiData.totalImpressions.toLocaleString('pt-BR') },
-    { title: 'Cliques', value: kpiData.totalClicks.toLocaleString('pt-BR') },
-    { title: 'CTR', value: `${kpiData.ctr.toFixed(2)}%` },
-    { title: 'CPC', value: `R$ ${kpiData.cpc.toFixed(2)}` },
-    { title: 'Custo Total', value: `R$ ${kpiData.totalCost.toFixed(2)}` },
-    { title: 'ROAS', value: kpiData.roas.toFixed(2) },
+    { title: 'Cliques no Link', value: kpiData.totalClicks.toLocaleString('pt-BR') },
+    { title: 'Total Investido', value: `R$ ${kpiData.totalCost.toFixed(2)}` },
+    { title: 'LEADS', value: kpiData.totalLeads > 0 ? kpiData.totalLeads.toLocaleString('pt-BR') : 'N/A' },
+    { title: 'Custo por LEAD', value: kpiData.totalLeads > 0 ? `R$ ${kpiData.cpl.toFixed(2)}` : 'N/A' },
   ];
 
   mainKPIs.forEach((kpi, index) => {

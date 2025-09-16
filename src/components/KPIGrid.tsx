@@ -14,6 +14,7 @@ import {
   ArrowDownRight
 } from 'lucide-react';
 import type { KPIData } from '@/lib/kpiCalculations';
+import { formatCurrency, formatNumber, formatPercentage } from '@/lib/utils';
 
 interface KPIGridProps {
   kpis: KPIData;
@@ -157,53 +158,53 @@ const KPIGrid: React.FC<KPIGridProps> = ({ kpis }) => {
     // Performance Metrics
     {
       title: 'Taxa de Cliques (CTR)',
-      value: `${kpis.ctr.toFixed(2)}%`,
+      value: formatPercentage(kpis.ctr),
       benchmark: getBenchmark(kpis.ctr, thresholds.ctr),
-      icon: <MousePointer className="w-4 h-4 text-gray-600" />,
+      icon: <MousePointer className="w-4 h-4 text-red-600" />,
       category: 'performance' as const
     },
     {
       title: 'Impressões Totais',
-      value: kpis.totalImpressions.toLocaleString('pt-BR'),
-      icon: <Eye className="w-4 h-4 text-gray-600" />,
+      value: formatNumber(kpis.totalImpressions),
+      icon: <Eye className="w-4 h-4 text-red-600" />,
       category: 'performance' as const
     },
     {
       title: 'Cliques Totais',
-      value: kpis.totalClicks.toLocaleString('pt-BR'),
-      icon: <Target className="w-4 h-4 text-gray-600" />,
+      value: formatNumber(kpis.totalClicks),
+      icon: <Target className="w-4 h-4 text-red-600" />,
       category: 'performance' as const
     },
     {
       title: 'Alcance',
-      value: kpis.totalReach > 0 ? kpis.totalReach.toLocaleString('pt-BR') : 'N/A',
-      icon: <Users className="w-4 h-4 text-gray-600" />,
+      value: kpis.totalReach > 0 ? formatNumber(kpis.totalReach) : 'N/A',
+      icon: <Users className="w-4 h-4 text-red-600" />,
       category: 'performance' as const
     },
 
     // Cost Metrics
     {
       title: 'Custo Total',
-      value: `R$ ${kpis.totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+      value: formatCurrency(kpis.totalCost),
       icon: <DollarSign className="w-4 h-4 text-red-600" />,
       category: 'cost' as const
     },
     {
       title: 'CPC Médio',
-      value: `R$ ${kpis.cpc.toFixed(2)}`,
+      value: formatCurrency(kpis.cpc),
       benchmark: getBenchmark(kpis.cpc <= 2 ? 5 : kpis.cpc <= 5 ? 3 : 1, thresholds.ctr),
       icon: <Calculator className="w-4 h-4 text-red-600" />,
       category: 'cost' as const
     },
     {
       title: 'CPM',
-      value: `R$ ${kpis.cpm.toFixed(2)}`,
+      value: formatCurrency(kpis.cpm),
       icon: <TrendingUp className="w-4 h-4 text-red-600" />,
       category: 'cost' as const
     },
     {
       title: 'CPL',
-      value: kpis.cpl > 0 ? `R$ ${kpis.cpl.toFixed(2)}` : 'N/A',
+      value: kpis.cpl > 0 ? formatCurrency(kpis.cpl) : 'N/A',
       icon: <Target className="w-4 h-4 text-red-600" />,
       category: 'cost' as const
     },
@@ -211,28 +212,28 @@ const KPIGrid: React.FC<KPIGridProps> = ({ kpis }) => {
     // Conversion Metrics
     {
       title: 'Leads Totais',
-      value: kpis.totalLeads > 0 ? kpis.totalLeads.toLocaleString('pt-BR') : 'N/A',
-      icon: <Users className="w-4 h-4 text-gray-600" />,
+      value: kpis.totalLeads > 0 ? formatNumber(kpis.totalLeads) : 'N/A',
+      icon: <Users className="w-4 h-4 text-red-600" />,
       category: 'conversion' as const
     },
     {
       title: 'Conversões',
-      value: kpis.totalConversions > 0 ? kpis.totalConversions.toLocaleString('pt-BR') : 'N/A',
-      icon: <ShoppingCart className="w-4 h-4 text-gray-600" />,
+      value: kpis.totalConversions > 0 ? formatNumber(kpis.totalConversions) : 'N/A',
+      icon: <ShoppingCart className="w-4 h-4 text-red-600" />,
       category: 'conversion' as const
     },
     {
       title: 'Taxa de Conversão',
-      value: kpis.conversionRate > 0 ? `${kpis.conversionRate.toFixed(2)}%` : 'N/A',
+      value: kpis.conversionRate > 0 ? formatPercentage(kpis.conversionRate) : 'N/A',
       benchmark: kpis.conversionRate > 0 ? getBenchmark(kpis.conversionRate, thresholds.conversionRate) : null,
-      icon: <Target className="w-4 h-4 text-gray-600" />,
+      icon: <Target className="w-4 h-4 text-red-600" />,
       category: 'conversion' as const
     },
     {
       title: 'ROAS',
-      value: kpis.roas > 0 ? `${kpis.roas.toFixed(2)}x` : 'N/A',
+      value: kpis.roas > 0 ? `${formatNumber(kpis.roas, 2)}x` : 'N/A',
       benchmark: kpis.roas > 0 ? getBenchmark(kpis.roas, thresholds.roas) : null,
-      icon: <TrendingUp className="w-4 h-4 text-gray-600" />,
+      icon: <TrendingUp className="w-4 h-4 text-red-600" />,
       category: 'conversion' as const
     }
   ];
@@ -275,8 +276,8 @@ const KPIGrid: React.FC<KPIGridProps> = ({ kpis }) => {
         <Card className="bg-white border border-gray-200 shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-gray-50 rounded-lg">
-                <Eye className="w-6 h-6 text-gray-600" />
+              <div className="p-3 bg-red-50 rounded-lg">
+                <Eye className="w-6 h-6 text-red-600" />
               </div>
               <div>
                 <div className="text-sm font-medium text-gray-600">Performance Geral</div>
@@ -284,7 +285,7 @@ const KPIGrid: React.FC<KPIGridProps> = ({ kpis }) => {
                   {kpis.ctr >= 2 ? 'Excelente' : kpis.ctr >= 1 ? 'Boa' : 'Média'}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
-                  CTR: {kpis.ctr.toFixed(2)}%
+                  CTR: {formatPercentage(kpis.ctr)}
                 </div>
               </div>
             </div>
@@ -303,7 +304,7 @@ const KPIGrid: React.FC<KPIGridProps> = ({ kpis }) => {
                   {kpis.cpc <= 3 ? 'Excelente' : kpis.cpc <= 8 ? 'Boa' : 'Média'}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
-                  CPC: R$ {kpis.cpc.toFixed(2)}
+                  CPC: {formatCurrency(kpis.cpc)}
                 </div>
               </div>
             </div>
@@ -313,8 +314,8 @@ const KPIGrid: React.FC<KPIGridProps> = ({ kpis }) => {
         <Card className="bg-white border border-gray-200 shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-gray-50 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-gray-600" />
+              <div className="p-3 bg-red-50 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-red-600" />
               </div>
               <div>
                 <div className="text-sm font-medium text-gray-600">ROI</div>
@@ -322,7 +323,7 @@ const KPIGrid: React.FC<KPIGridProps> = ({ kpis }) => {
                   {kpis.roas >= 4 ? 'Excelente' : kpis.roas >= 2 ? 'Bom' : kpis.roas > 0 ? 'Médio' : 'N/A'}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
-                  {kpis.roas > 0 ? `ROAS: ${kpis.roas.toFixed(2)}x` : 'Dados insuficientes'}
+                  {kpis.roas > 0 ? `ROAS: ${formatNumber(kpis.roas, 2)}x` : 'Dados insuficientes'}
                 </div>
               </div>
             </div>

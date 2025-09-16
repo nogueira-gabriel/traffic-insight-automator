@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileUploadArea } from "@/components/FileUploadArea";
 import { ReportDashboard } from "@/components/ReportDashboard";
 import { Header } from "@/components/Header";
@@ -34,6 +34,14 @@ const Index = () => {
 
   const handleDataLoaded = (data: TrafficData[]) => {
     setTrafficData(data);
+    // Scroll to top when dashboard loads
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleReset = () => {
+    setTrafficData([]);
+    // Scroll to top when resetting
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -54,7 +62,7 @@ const Index = () => {
           <div className="space-y-8">
             <ReportDashboard 
               data={trafficData} 
-              onReset={() => setTrafficData([])}
+              onReset={handleReset}
             />
           </div>
         )}

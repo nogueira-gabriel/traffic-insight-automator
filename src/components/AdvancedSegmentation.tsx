@@ -21,8 +21,10 @@ interface TimeSegmentData {
   impressions: number;
   clicks: number;
   conversions: number;
+  leads: number;
   cost: number;
   ctr: number;
+  leadRate: number;
   conversionRate: number;
   avgCost: number;
 }
@@ -31,8 +33,10 @@ interface DayData {
   day: string;
   impressions: number;
   clicks: number;
+  leads: number;
   cost: number;
   ctr: number;
+  leadRate: number;
   performance: 'excellent' | 'good' | 'average' | 'poor';
 }
 
@@ -60,15 +64,18 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
         impressions: acc.impressions + row.impressions,
         clicks: acc.clicks + row.clicks,
         cost: acc.cost + row.cost,
-        conversions: acc.conversions + (row.conversions || 0)
-      }), { impressions: 0, clicks: 0, cost: 0, conversions: 0 });
+        conversions: acc.conversions + (row.conversions || 0),
+        leads: acc.leads + (row.leads || 0)
+      }), { impressions: 0, clicks: 0, cost: 0, conversions: 0, leads: 0 });
 
       const impressions = Math.round(totalMetrics.impressions * baseShare);
       const clicks = Math.round(totalMetrics.clicks * baseShare);
       const cost = totalMetrics.cost * baseShare;
       const conversions = Math.round(totalMetrics.conversions * baseShare);
+      const leads = Math.round(totalMetrics.leads * baseShare);
       
       const ctr = impressions > 0 ? (clicks / impressions) * 100 : 0;
+      const leadRate = impressions > 0 ? (leads / impressions) * 100 : 0;
       const conversionRate = clicks > 0 ? (conversions / clicks) * 100 : 0;
       const avgCost = clicks > 0 ? cost / clicks : 0;
 
@@ -78,8 +85,10 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
         impressions,
         clicks,
         conversions,
+        leads,
         cost: Number(cost.toFixed(2)),
         ctr: Number(ctr.toFixed(2)),
+        leadRate: Number(leadRate.toFixed(2)),
         conversionRate: Number(conversionRate.toFixed(2)),
         avgCost: Number(avgCost.toFixed(2))
       };
@@ -96,32 +105,36 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
       const dayName = days[dayOfWeek === 0 ? 6 : dayOfWeek - 1]; // Adjust Sunday to be last
       
       if (!acc[dayName]) {
-        acc[dayName] = { impressions: 0, clicks: 0, cost: 0, count: 0 };
+        acc[dayName] = { impressions: 0, clicks: 0, leads: 0, cost: 0, count: 0 };
       }
       
       acc[dayName].impressions += row.impressions;
       acc[dayName].clicks += row.clicks;
+      acc[dayName].leads += (row.leads || 0);
       acc[dayName].cost += row.cost;
       acc[dayName].count += 1;
       
       return acc;
-    }, {} as Record<string, {impressions: number; clicks: number; cost: number; count: number}>);
+    }, {} as Record<string, {impressions: number; clicks: number; leads: number; cost: number; count: number}>);
 
     return days.map(day => {
-      const dayData = dayMetrics[day] || { impressions: 0, clicks: 0, cost: 0, count: 0 };
+      const dayData = dayMetrics[day] || { impressions: 0, clicks: 0, leads: 0, cost: 0, count: 0 };
       const ctr = dayData.impressions > 0 ? (dayData.clicks / dayData.impressions) * 100 : 0;
+      const leadRate = dayData.impressions > 0 ? (dayData.leads / dayData.impressions) * 100 : 0;
       
       let performance: 'excellent' | 'good' | 'average' | 'poor' = 'average';
-      if (ctr >= 3) performance = 'excellent';
-      else if (ctr >= 2) performance = 'good';
-      else if (ctr < 1) performance = 'poor';
+      if (leadRate >= 3) performance = 'excellent';
+      else if (leadRate >= 2) performance = 'good';
+      else if (leadRate < 1) performance = 'poor';
 
       return {
         day,
         impressions: dayData.impressions,
         clicks: dayData.clicks,
+        leads: dayData.leads,
         cost: Number(dayData.cost.toFixed(2)),
         ctr: Number(ctr.toFixed(2)),
+        leadRate: Number(leadRate.toFixed(2)),
         performance
       };
     });
@@ -200,7 +213,7 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
 
                 <Card className="bg-white border-gray-200">
                   <CardHeader className="pb-4">
-                    <CardTitle className="text-lg text-gray-900">CTR por Período</CardTitle>
+                    <CardTitle className="text-lg text-gray-900">Taxa de Leads por Período</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
@@ -211,14 +224,14 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
                           cy="50%"
                           outerRadius={100}
                           fill="#8884d8"
-                          dataKey="ctr"
+                          dataKey="leadRate"
                           label={false}
                         >
                           {timeSegments.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(value: number) => [`${value}%`, 'CTR']} />
+                        <Tooltip formatter={(value: number) => [`${value}%`, 'Taxa de Leads']} />
                       </RechartsPieChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -243,7 +256,7 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
                             <div>
                               <div className="font-medium text-gray-900">{segment.timeRange}</div>
                               <div className="text-sm text-gray-600">
-                                {segment.impressions.toLocaleString()} impressões • CTR: {segment.ctr}%
+                                {segment.impressions.toLocaleString()} impressões • {segment.leads} leads • Taxa: {segment.leadRate}%
                               </div>
                             </div>
                           </div>
@@ -258,21 +271,21 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
                               <div className="font-medium text-gray-900">R$ {segment.avgCost}</div>
                             </div>
                             <div className="text-center">
-                              <div className="text-sm text-gray-600">Conversões</div>
-                              <div className="font-medium text-gray-900">{segment.conversions}</div>
+                              <div className="text-sm text-gray-600">Leads</div>
+                              <div className="font-medium text-gray-900">{segment.leads}</div>
                             </div>
                             <Badge 
                               variant="secondary"
                               className={
-                                segment.ctr >= 3 ? 'bg-green-100 text-green-800' :
-                                segment.ctr >= 2 ? 'bg-blue-100 text-blue-800' :
-                                segment.ctr >= 1 ? 'bg-yellow-100 text-yellow-800' :
+                                segment.leadRate >= 3 ? 'bg-green-100 text-green-800' :
+                                segment.leadRate >= 2 ? 'bg-blue-100 text-blue-800' :
+                                segment.leadRate >= 1 ? 'bg-yellow-100 text-yellow-800' :
                                 'bg-red-100 text-red-800'
                               }
                             >
-                              {segment.ctr >= 3 ? 'Excelente' :
-                               segment.ctr >= 2 ? 'Bom' :
-                               segment.ctr >= 1 ? 'Médio' : 'Baixo'}
+                              {segment.leadRate >= 3 ? 'Excelente' :
+                               segment.leadRate >= 2 ? 'Bom' :
+                               segment.leadRate >= 1 ? 'Médio' : 'Baixo'}
                             </Badge>
                           </div>
                         </div>
@@ -287,7 +300,7 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="bg-white border-gray-200">
                   <CardHeader className="pb-4">
-                    <CardTitle className="text-lg text-gray-900">Performance por Dia da Semana</CardTitle>
+                    <CardTitle className="text-lg text-gray-900">Taxa de Leads por Dia da Semana</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
@@ -296,7 +309,7 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
                         <XAxis dataKey="day" stroke="#6b7280" fontSize={11} />
                         <YAxis stroke="#6b7280" fontSize={11} />
                         <Tooltip />
-                        <Bar dataKey="ctr" fill="#D21B1B" name="CTR %" />
+                        <Bar dataKey="leadRate" fill="#D21B1B" name="Taxa de Leads %" />
                       </BarChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -329,7 +342,7 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
                 <CardContent>
                   <div className="space-y-3">
                     {dayPerformance
-                      .sort((a, b) => b.ctr - a.ctr)
+                      .sort((a, b) => b.leadRate - a.leadRate)
                       .map((day, index) => (
                         <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                           <div className="flex items-center space-x-4">
@@ -344,15 +357,15 @@ export const AdvancedSegmentation: React.FC<AdvancedSegmentationProps> = ({ data
                             <div>
                               <div className="font-medium text-gray-900">{day.day}</div>
                               <div className="text-sm text-gray-600">
-                                {day.impressions.toLocaleString()} impressões • {day.clicks.toLocaleString()} cliques
+                                {day.impressions.toLocaleString()} impressões • {day.leads} leads
                               </div>
                             </div>
                           </div>
                           
                           <div className="flex items-center space-x-6">
                             <div className="text-center">
-                              <div className="text-sm text-gray-600">CTR</div>
-                              <div className="font-medium text-gray-900">{day.ctr}%</div>
+                              <div className="text-sm text-gray-600">Taxa de Leads</div>
+                              <div className="font-medium text-gray-900">{day.leadRate}%</div>
                             </div>
                             <div className="text-center">
                               <div className="text-sm text-gray-600">Custo</div>

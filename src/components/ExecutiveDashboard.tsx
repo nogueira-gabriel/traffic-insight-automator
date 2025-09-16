@@ -57,7 +57,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ data, kp
         value: kpis.totalImpressions.toLocaleString('pt-BR'),
         trend: impressionsTrend > 0 ? 'up' : impressionsTrend < 0 ? 'down' : 'stable',
         status: impressionsTrend > 10 ? 'excellent' : impressionsTrend > 0 ? 'good' : impressionsTrend > -10 ? 'warning' : 'critical',
-        icon: <Eye className="w-5 h-5" />,
+        icon: <Eye className="w-5 h-5 text-red-600" />,
         description: `${impressionsTrend > 0 ? '+' : ''}${impressionsTrend.toFixed(1)}% vs mês anterior`
       },
       {
@@ -65,7 +65,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ data, kp
         value: kpis.totalClicks.toLocaleString('pt-BR'),
         trend: clicksTrend > 0 ? 'up' : clicksTrend < 0 ? 'down' : 'stable',
         status: clicksTrend > 10 ? 'excellent' : clicksTrend > 0 ? 'good' : clicksTrend > -10 ? 'warning' : 'critical',
-        icon: <MousePointer className="w-5 h-5" />,
+        icon: <MousePointer className="w-5 h-5 text-red-600" />,
         description: `${clicksTrend > 0 ? '+' : ''}${clicksTrend.toFixed(1)}% vs mês anterior`
       },
       {
@@ -73,7 +73,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ data, kp
         value: `R$ ${kpis.totalCost.toLocaleString('pt-BR')}`,
         trend: 'stable',
         status: 'good',
-        icon: <DollarSign className="w-5 h-5" />,
+        icon: <DollarSign className="w-5 h-5 text-red-600" />,
         description: 'Investimento em publicidade'
       },
       {
@@ -81,7 +81,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ data, kp
         value: `${kpis.ctr.toFixed(2)}%`,
         trend: kpis.ctr > 2 ? 'up' : 'stable',
         status: kpis.ctr >= 3 ? 'excellent' : kpis.ctr >= 2 ? 'good' : kpis.ctr >= 1 ? 'warning' : 'critical',
-        icon: <Target className="w-5 h-5" />,
+        icon: <Target className="w-5 h-5 text-red-600" />,
         description: 'Percentual de cliques por impressão'
       },
       {
@@ -89,7 +89,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ data, kp
         value: `R$ ${kpis.cpc.toFixed(2)}`,
         trend: kpis.cpc < 1 ? 'up' : 'stable',
         status: kpis.cpc <= 0.5 ? 'excellent' : kpis.cpc <= 1 ? 'good' : kpis.cpc <= 2 ? 'warning' : 'critical',
-        icon: <BarChart3 className="w-5 h-5" />,
+        icon: <BarChart3 className="w-5 h-5 text-red-600" />,
         description: 'Custo médio por clique'
       },
       {
@@ -97,7 +97,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ data, kp
         value: kpis.totalConversions.toLocaleString('pt-BR'),
         trend: currentConversions > 0 ? 'up' : 'stable',
         status: kpis.conversionRate >= 5 ? 'excellent' : kpis.conversionRate >= 2 ? 'good' : kpis.conversionRate >= 1 ? 'warning' : 'critical',
-        icon: <Users className="w-5 h-5" />,
+        icon: <Users className="w-5 h-5 text-red-600" />,
         description: `Taxa de conversão: ${kpis.conversionRate.toFixed(2)}%`
       }
     ];
@@ -148,23 +148,23 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ data, kp
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className={`p-2 rounded-lg ${
-                      metric.status === 'excellent' ? 'bg-green-100 text-green-600' :
-                      metric.status === 'good' ? 'bg-blue-100 text-blue-600' :
-                      metric.status === 'warning' ? 'bg-yellow-100 text-yellow-600' :
-                      'bg-red-100 text-red-600'
+                      metric.status === 'excellent' ? 'bg-red-50 text-red-600' :
+                      metric.status === 'good' ? 'bg-gray-100 text-gray-700' :
+                      metric.status === 'warning' ? 'bg-gray-100 text-gray-600' :
+                      'bg-gray-100 text-gray-500'
                     }`}>
                       {metric.icon}
                     </div>
                     <div className="flex items-center space-x-1">
-                      {metric.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-500" />}
-                      {metric.trend === 'down' && <TrendingDown className="w-4 h-4 text-red-500" />}
+                      {metric.trend === 'up' && <TrendingUp className="w-4 h-4 text-red-600" />}
+                      {metric.trend === 'down' && <TrendingDown className="w-4 h-4 text-gray-500" />}
                       <Badge 
                         variant="secondary"
                         className={
-                          metric.status === 'excellent' ? 'bg-green-100 text-green-800' :
-                          metric.status === 'good' ? 'bg-blue-100 text-blue-800' :
-                          metric.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
+                          metric.status === 'excellent' ? 'bg-red-50 text-red-700 border-red-200' :
+                          metric.status === 'good' ? 'bg-gray-100 text-gray-700 border-gray-200' :
+                          metric.status === 'warning' ? 'bg-gray-100 text-gray-600 border-gray-200' :
+                          'bg-gray-100 text-gray-500 border-gray-200'
                         }
                       >
                         {metric.status === 'excellent' ? 'Excelente' :
@@ -304,27 +304,27 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ data, kp
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="font-medium text-blue-900 mb-2">📊 Performance</div>
-                  <div className="text-sm text-blue-700">
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="font-medium text-red-900 mb-2">📊 Performance</div>
+                  <div className="text-sm text-gray-700">
                     • CTR atual: {kpis.ctr.toFixed(2)}%<br/>
                     • {kpis.totalImpressions.toLocaleString()} impressões totais<br/>
                     • {kpis.totalClicks.toLocaleString()} cliques gerados
                   </div>
                 </div>
                 
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="font-medium text-green-900 mb-2">💰 Investimento</div>
-                  <div className="text-sm text-green-700">
+                <div className="p-4 bg-white border border-gray-200 rounded-lg">
+                  <div className="font-medium text-gray-900 mb-2">💰 Investimento</div>
+                  <div className="text-sm text-gray-700">
                     • Custo total: R$ {kpis.totalCost.toLocaleString()}<br/>
                     • CPC médio: R$ {kpis.cpc.toFixed(2)}<br/>
                     • {kpis.totalConversions} conversões realizadas
                   </div>
                 </div>
                 
-                <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                  <div className="font-medium text-orange-900 mb-2">🎯 Eficiência</div>
-                  <div className="text-sm text-orange-700">
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="font-medium text-gray-900 mb-2">🎯 Eficiência</div>
+                  <div className="text-sm text-gray-700">
                     • Taxa de conversão: {kpis.conversionRate.toFixed(2)}%<br/>
                     • CPA: R$ {kpis.cpa.toFixed(2)}<br/>
                     • Campanhas ativas em análise

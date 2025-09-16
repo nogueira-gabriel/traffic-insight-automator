@@ -12,7 +12,6 @@ import { ExecutiveDashboard } from "@/components/ExecutiveDashboard";
 import { GeographicAnalysis } from "@/components/GeographicAnalysis";
 import { GoalTracking } from "@/components/GoalTracking";
 import { AdvancedSegmentation } from "@/components/AdvancedSegmentation";
-import { ROIAttribution } from "@/components/ROIAttribution";
 import { AdvancedCharts } from "@/components/AdvancedCharts";
 import { TrafficData } from "@/pages/Index";
 import { calculateKPIs } from "@/lib/kpiCalculations";
@@ -24,7 +23,7 @@ interface ReportDashboardProps {
 }
 
 export const ReportDashboard = ({ data, onReset }: ReportDashboardProps) => {
-  const [activeView, setActiveView] = useState<'dashboard' | 'executive' | 'temporal' | 'geographic' | 'goals' | 'segmentation' | 'attribution' | 'charts' | 'preview'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'executive' | 'temporal' | 'geographic' | 'goals' | 'segmentation' | 'charts' | 'preview'>('dashboard');
   const [filteredData, setFilteredData] = useState<TrafficData[]>(data);
   
   const kpis = calculateKPIs(filteredData);
@@ -105,15 +104,6 @@ export const ReportDashboard = ({ data, onReset }: ReportDashboardProps) => {
             >
               <Users className="w-4 h-4 mr-2" />
               Segmentação
-            </Button>
-            <Button
-              variant={activeView === 'attribution' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveView('attribution')}
-              className={`text-sm ${activeView === 'attribution' ? 'bg-red-600 text-white shadow-sm' : 'text-gray-700 hover:bg-gray-100'}`}
-            >
-              <Link className="w-4 h-4 mr-2" />
-              Atribuição
             </Button>
             <Button
               variant={activeView === 'charts' ? 'default' : 'ghost'}
@@ -225,8 +215,6 @@ export const ReportDashboard = ({ data, onReset }: ReportDashboardProps) => {
         <GoalTracking data={filteredData} kpis={kpis} />
       ) : activeView === 'segmentation' ? (
         <AdvancedSegmentation data={filteredData} />
-      ) : activeView === 'attribution' ? (
-        <ROIAttribution data={filteredData} />
       ) : activeView === 'charts' ? (
         <AdvancedCharts data={filteredData} />
       ) : (
